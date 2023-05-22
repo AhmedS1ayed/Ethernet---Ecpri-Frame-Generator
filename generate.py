@@ -10,7 +10,7 @@ from ifg_generator import generate_ifg
 from preamble_generator import generate_preamble
 from sop_generator import generate_sop
 
-stream_duration_ms \
+stream_duration_us \
 ,ifgs \
 ,src_mac \
 ,dst_mac \
@@ -26,28 +26,36 @@ stream_duration_ms \
 max_data_size = max_packet_size - 26
 min_data_size = min_packet_size - 26 #46-byte
 
+packet_periodicity = burst_periodicity_us / burst_size
+time = 0
+
 with open('packets.txt', 'w') as file:
-    for i in range(burst_size):
-        #preamble & sop generation
-        preamble = generate_preamble()
-        sop = generate_sop()
+    while time < stream_duration_us :
+        for i in range(burst_size):
+            #calculating time to send this packet
+            time += packet_periodicity
+            if(time > stream_duration_us):
+                break
+            #preamble & sop generation
+            preamble = generate_preamble()
+            sop = generate_sop()
 
-        #header generation
-        eth_header = generate_header(dst_mac,src_mac,ether_type)
+            #header generation
+            eth_header = generate_header(dst_mac,src_mac,ether_type)
 
-        #data generation
-        data = generate_data(min_data_size,max_data_size)
+            #data generation
+            data = generate_data(min_data_size,max_data_size)
 
-        #fcs generation
-        crc = generate_crc(data)
-        
-        #construct the packet
-        packet = preamble + sop + eth_header + data + crc
-        file.write(packet.hex() + '\n')
+            #fcs generation
+            crc = generate_crc(data)
 
-        #ifg generation
-        ifg = generate_ifg(ifgs)
-        file.write(ifg.hex() + '\n')
+            #construct the packet
+            packet = preamble + sop + eth_header + data + crc
+            file.write(packet.hex() + '\n')
+
+            #ifg generation
+            ifg = generate_ifg(ifgs)
+            file.write(ifg.hex() + '\n')
 
     file.close()
 
