@@ -1,7 +1,13 @@
 import struct
 import random
+import sys
+sys.path.append("./generator")
 from config import configuration
-from FCS import FCS
+from data_generator import generate_data
+from fcs_generator import generate_fcs
+from header_generator import generate_header
+from ifg_generator import generate_ifg
+
 
 configs = configuration()
 
@@ -20,21 +26,26 @@ min_data_size = min_packet_size - 26 #46-byte
 
 with open('packets.txt', 'w') as file:
     for i in range(burst_size):
+        #preamble & sop generation
         preamble = b''.join([struct.pack('B',170) for _ in range(7)])
         sop = b''.join([struct.pack('B',171)])
-        eth_header = struct.pack('!6s6s2s',dst_mac, src_mac, ether_type)
 
-        data_size = random.randint(min_data_size,max_data_size)
-        data = b''.join([struct.pack('B', random.randint(0, 255)) for _ in range(data_size)])
-        fcs = FCS(data)
+        #header generation
+        eth_header = generate_header(dst_mac,src_mac,ether_type)
+
+        #data generation
+        data = generate_data(min_data_size,max_data_size)
+
+        #fcs generation
+        fcs = generate_fcs(data)
         
+        #construct the packet
         packet = preamble + sop + eth_header + data + fcs
         file.write(packet.hex() + '\n')
 
-
-        no_ifgs = random.randrange(4, 20 , 4)
-        ifg_cycle = b''.join([struct.pack('B',ifgs) for _ in range(no_ifgs)])
-        file.write(ifg_cycle.hex() + '\n')
+        #ifg generation
+        ifg = generate_ifg(ifgs)
+        file.write(ifg.hex() + '\n')
         
     file.close()
 

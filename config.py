@@ -20,7 +20,6 @@ def configuration() :
     
     ifgs = int(ifgs,16)
     burst_size = int(burst_size,10)
-    
 
     return {'STREAM_DURATION_MS' : stream_duration_ms \
             ,'IFGs' : ifgs \
