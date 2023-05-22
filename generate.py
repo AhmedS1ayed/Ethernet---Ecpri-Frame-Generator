@@ -36,6 +36,7 @@ with open('packets.txt', 'w') as file:
             time += packet_periodicity
             if(time > stream_duration_us):
                 break
+            
             #preamble & sop generation
             preamble = generate_preamble()
             sop = generate_sop()
