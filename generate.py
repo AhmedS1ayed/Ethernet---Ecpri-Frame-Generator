@@ -75,7 +75,8 @@ def generate():
 
                 elif(bytes > bytes_due_period):
                     #replace bytes remained with ifgs
-                    no_ifgs = bytes_due_period - bytes_before_cycle          
+                    no_ifgs = bytes_due_period - bytes_before_cycle  
+                            
                     #generate ifgs instead of packets
                     ifg,no_ifgs = generate_break_ifg(ifgs,no_ifgs)
                     file.write(ifg.hex() + '\n')
