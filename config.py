@@ -62,10 +62,21 @@ def configuration_ecpri() :
     message_type = bytes.fromhex(message_type)
     payload_size = bytes.fromhex(payload_size)
 
-    return [protocol_version, \
-            concatenation_indicator, \
-            message_type, \
-            payload_size]
+    return [
+            stream_duration_us \
+            ,ifgs \
+            ,src_mac \
+            ,dst_mac \
+            ,ether_type \
+            ,payload_type \
+            ,max_packet_size \
+            ,min_packet_size\
+            ,burst_size \
+            ,burst_periodicity_us \
+            ,protocol_version \
+            ,concatenation_indicator \
+            ,message_type \
+            ,payload_size]
 
     
 
