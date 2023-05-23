@@ -25,7 +25,7 @@ stream_duration_us \
 
 bytes_per_us = math.floor(max_packet_size * burst_size / burst_periodicity_us)
 bytes_per_period = bytes_per_us * burst_periodicity_us
-bytes_per_stream = bytes_per_us * stream_duration_us
+bytes_due_stream = bytes_per_us * stream_duration_us
 
 bytes = 0
 bytes_before_cycle = 0
@@ -40,9 +40,10 @@ def generate():
     global bytes
     global bytes_due_period
     with open('packets.txt', 'w') as file:
-        while bytes < bytes_per_stream:
+        while bytes < bytes_due_stream:
             for i in range(burst_size):
                 bytes_before_cycle = bytes
+
                 #preamble & sop generation
                 preamble = generate_preamble()
                 sop = generate_sop()
@@ -59,9 +60,27 @@ def generate():
                 #fcs generation
                 crc = generate_crc(data)
                 bytes += 4
-
+                
                 #check if the frame can be sent and if it can't , send ifgs instead and make them a multiple of 4 :
-                if(bytes > bytes_per_stream or bytes > bytes_due_period):
+                if(bytes > bytes_due_stream):
+                    #replace bytes remained with ifgs
+                    no_ifgs = bytes_due_stream - bytes_before_cycle
+
+                    #make ifgs multiple of 4
+                    if((no_ifgs % 4) != 0):
+                        no_ifgs += 4 - (no_ifgs % 4)
+                    
+                    #generate ifgs
+                    ifg = generate_break_ifg(ifgs,no_ifgs)
+                    
+                    #generate ifgs of multiple of 4 instead of packet
+                    file.write(ifg.hex() + '\n')
+
+                    bytes = bytes_before_cycle + no_ifgs
+                    bytes_due_period += bytes_per_period
+                    break
+
+                if(bytes > bytes_due_period):
                     #replace bytes remained with ifgs
                     no_ifgs = bytes_due_period - bytes_before_cycle
 
@@ -87,6 +106,8 @@ def generate():
                 ifg,no_ifgs = generate_ifg(ifgs)
                 bytes += no_ifgs
                 file.write(ifg.hex() + '\n')
+            
+            #setting new limit bytes_due_period
             bytes_due_period += bytes_per_period
 
         file.close()
