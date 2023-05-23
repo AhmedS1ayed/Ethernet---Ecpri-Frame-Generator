@@ -1,9 +1,9 @@
 import configparser
+config = configparser.ConfigParser()
+config.read('config.ini')
 
 def configuration() :
-    config = configparser.ConfigParser()
-    config.read('config.ini')
-
+    global config
     stream_duration_ms = config['PACKET_CONFIG']['STREAM_DURATION_MS']
     ifgs = config['PACKET_CONFIG']['IFGs'].split('x')[1]
     src_mac = config['PACKET_CONFIG']['SOURCE_ADDRESS'].split('x')[1]
@@ -35,3 +35,39 @@ def configuration() :
             ,min_packet_size\
             ,burst_size \
             ,burst_periodicity_us]
+
+
+
+def configuration_ecpri() :
+    global config
+    stream_duration_us \
+    ,ifgs \
+    ,src_mac \
+    ,dst_mac \
+    ,ether_type \
+    ,payload_type \
+    ,max_packet_size \
+    ,min_packet_size\
+    ,burst_size \
+    ,burst_periodicity_us = configuration()
+
+
+
+    protocol_version = config['PACKET_CONFIG']['PROTOCOL_VERSION'].split('x')[1]
+    concatenation_indicator = config['PACKET_CONFIG']['CONCATENATION_INDICATOR'].split('x')[1]
+    message_type = config['PACKET_CONFIG']['MESSAGE_TYPE'].split('x')[1]
+    payload_size = config['PACKET_CONFIG']['PAYLOAD_SIZE'].split('x')[1]
+
+
+    message_type = bytes.fromhex(message_type)
+    payload_size = bytes.fromhex(payload_size)
+
+    return [protocol_version, \
+            concatenation_indicator, \
+            message_type, \
+            payload_size]
+
+    
+
+# configuration_ecpri()
+# configuration_ecpri()
