@@ -1,6 +1,7 @@
 import struct
 import random
 import sys
+import math
 sys.path.append("./generator")
 from config import configuration,configuration_ecpri
 from data_generator import generate_data
@@ -22,11 +23,13 @@ stream_duration_us \
 ,burst_size \
 ,burst_periodicity_us = configuration()
 
-bytes_per_us = max_packet_size * burst_size / burst_periodicity_us
+bytes_per_us = math.floor(max_packet_size * burst_size / burst_periodicity_us)
 bytes_per_period = bytes_per_us * burst_periodicity_us
 bytes_per_stream = bytes_per_us * stream_duration_us
+
 bytes = 0
 bytes_before_cycle = 0
+bytes_due_period = bytes_per_period
 
 #calculations of data size
 max_data_size = max_packet_size - 26
@@ -35,7 +38,7 @@ min_data_size = min_packet_size - 26 #46-byte
 
 def generate():
     global bytes
-    global bytes_per_period
+    global bytes_due_period
     with open('packets.txt', 'w') as file:
         while bytes < bytes_per_stream:
             for i in range(burst_size):
@@ -58,17 +61,22 @@ def generate():
                 bytes += 4
 
                 #check if the frame can be sent and if it can't , send ifgs instead and make them a multiple of 4 :
-                if(bytes > bytes_per_stream or bytes > bytes_per_period):
-                    #make ifg of multiple of 4
-                    no_ifgs = bytes - bytes_before_cycle
+                if(bytes > bytes_per_stream or bytes > bytes_due_period):
+                    #replace bytes remained with ifgs
+                    no_ifgs = bytes_due_period - bytes_before_cycle
+
+                    #make ifgs multiple of 4
                     if((no_ifgs % 4) != 0):
                         no_ifgs += 4 - (no_ifgs % 4)
+                    
+                    #generate ifgs
                     ifg = generate_break_ifg(ifgs,no_ifgs)
                     
                     #generate ifgs of multiple of 4 instead of packet
                     file.write(ifg.hex() + '\n')
+
                     bytes = bytes_before_cycle + no_ifgs
-                    bytes_per_period += bytes_per_period
+                    bytes_due_period += bytes_per_period
                     break
 
                 #construct the packet
@@ -79,6 +87,7 @@ def generate():
                 ifg,no_ifgs = generate_ifg(ifgs)
                 bytes += no_ifgs
                 file.write(ifg.hex() + '\n')
+            bytes_due_period += bytes_per_period
 
         file.close()
 
