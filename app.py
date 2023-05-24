@@ -6,9 +6,9 @@ from generate import generate
 from config import config_type,set_config,set_fname
 
 
-def main(arg1, arg2):
-    set_config(arg1)
-    set_fname(arg2)
+def main(arg1 = 'config.ini', arg2 = 'packets.txt'):
+    set_config('config.ini')
+    set_fname('packets.txt')
     generate(config_type())
     
     print(arg1, arg2)

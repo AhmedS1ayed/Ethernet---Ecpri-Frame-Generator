@@ -36,9 +36,7 @@ def generate(type) :
         ,message_type \
         ,payload_size = configuration_ecpri()
         generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,ifgs,protocol_version,concatenation_indicator,message_type,payload_size)
-
-    print('pffffffffff')
-
+        
 #64-byte : is the minimum size of ethernet-frame excluding preamble and sop
 #8-byte : preamble + sop 
 #min-size-of-whole-packet : 64byte(ethernet-frame) + 8byte(preamble&sop) = 72-byte
