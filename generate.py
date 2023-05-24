@@ -4,9 +4,10 @@ import sys
 import math
 sys.path.append("./generator")
 from config import configuration,configuration_ecpri
-from data_generator import generate_data
+from data_generator import generate_data,generate_data_ecpri
 from crc_generator import generate_crc
 from header_generator import generate_header
+from ecpri_header_generator import generate_ecpri_header
 from ifg_generator import generate_ifg , generate_break_ifg
 from preamble_generator import generate_preamble
 from sop_generator import generate_sop
@@ -23,24 +24,22 @@ stream_duration_us \
 ,burst_size \
 ,burst_periodicity_us = configuration()
 
+#data rate and time to byte conversion calculations
 bytes_per_us = math.floor(max_packet_size * burst_size / burst_periodicity_us)
 bytes_per_period = bytes_per_us * burst_periodicity_us
 bytes_due_stream = bytes_per_us * stream_duration_us
-
-bytes = 0
-bytes_before_cycle = 0
-bytes_due_period = bytes_per_period
 
 #calculations of data size
 max_data_size = max_packet_size - 26
 min_data_size = min_packet_size - 26 #46-byte
 
 
-def generate():
-    global bytes
-    global bytes_due_period
+
+def generate_eth():
+    bytes = 0
     with open('packets.txt', 'w') as file:
         while bytes < bytes_due_stream:
+            bytes_due_period = bytes + bytes_per_period
             for i in range(burst_size):
                 bytes_before_cycle = bytes
 
@@ -72,11 +71,11 @@ def generate():
                     
                     bytes = bytes_before_cycle + no_ifgs
                     break
-
-                elif(bytes > bytes_due_period):
+                
+                if(bytes > bytes_due_period):
                     #replace bytes remained with ifgs
                     no_ifgs = bytes_due_period - bytes_before_cycle  
-                            
+
                     #generate ifgs instead of packets
                     ifg,no_ifgs = generate_break_ifg(ifgs,no_ifgs)
                     file.write(ifg.hex() + '\n')
@@ -84,6 +83,8 @@ def generate():
                     bytes = bytes_before_cycle + no_ifgs
                     bytes_due_period += bytes_per_period
                     break
+
+                # print('bytes : ' + str(bytes) + ' bytesDP :' + str(bytes_due_period))
 
                 #construct the packet
                 packet = preamble + sop + eth_header + data + crc
@@ -93,17 +94,23 @@ def generate():
                 ifg,no_ifgs = generate_ifg(ifgs)
                 file.write(ifg.hex() + '\n')
                 bytes += no_ifgs
-            
-            #setting new limit bytes_due_period
-            bytes_due_period += bytes_per_period
 
         file.close()
 
 def generate_ecpri():
-    global bytes
+
+    protocol_version \
+    ,concatenation_indicator \
+    ,message_type \
+    ,payload_size = configuration_ecpri()
+    bytes = 0
+
     with open('packets.txt', 'w') as file:
-        while bytes < bytes_per_stream:
+        while bytes < bytes_due_stream:
+            bytes_due_period = bytes + bytes_per_period
             for i in range(burst_size):
+                bytes_before_cycle = bytes
+
                 #preamble & sop generation
                 preamble = generate_preamble()
                 sop = generate_sop()
@@ -113,26 +120,52 @@ def generate_ecpri():
                 eth_header = generate_header(dst_mac,src_mac,ether_type)
                 bytes += 14
 
+                #ecpri header generation
+                ecpri_header = generate_ecpri_header(protocol_version,concatenation_indicator,message_type,payload_size)
+                bytes += 4
+
                 #data generation
-                data,data_size = generate_data(min_data_size,max_data_size)
+                data,data_size = generate_data_ecpri(payload_size)
                 bytes += data_size
 
                 #fcs generation
                 crc = generate_crc(data)
                 bytes += 4
 
-                #check if the frame can be sent
-                if(bytes > bytes_per_stream):
+                #check if the frame can be sent and if it can't , send ifgs instead and make them a multiple of 4 :
+                if(bytes > bytes_due_stream):
+                    #replace bytes remained with ifgs
+                    no_ifgs = bytes_due_stream - bytes_before_cycle
+
+                    #generate ifgs instead of packets
+                    ifg,no_ifgs = generate_break_ifg(ifgs,no_ifgs)
+                    file.write(ifg.hex() + '\n')
+                    
+                    bytes = bytes_before_cycle + no_ifgs
+                    break
+                
+                if(bytes > bytes_due_period):
+                    #replace bytes remained with ifgs
+                    no_ifgs = bytes_due_period - bytes_before_cycle  
+
+                    #generate ifgs instead of packets
+                    ifg,no_ifgs = generate_break_ifg(ifgs,no_ifgs)
+                    file.write(ifg.hex() + '\n')
+                    
+                    bytes = bytes_before_cycle + no_ifgs
+                    bytes_due_period += bytes_per_period
                     break
 
+                # print('bytes : ' + str(bytes) + ' bytesDP :' + str(bytes_due_period))
+
                 #construct the packet
-                packet = preamble + sop + eth_header + data + crc
+                packet = preamble + sop + eth_header + ecpri_header + data + crc
                 file.write(packet.hex() + '\n')
 
                 #ifg generation
                 ifg,no_ifgs = generate_ifg(ifgs)
-                bytes += no_ifgs
                 file.write(ifg.hex() + '\n')
+                bytes += no_ifgs
 
         file.close()
 

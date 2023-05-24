@@ -1,2 +1,2 @@
-from generate import generate
-generate()
+from generate import generate_eth,generate_ecpri
+generate_eth()
