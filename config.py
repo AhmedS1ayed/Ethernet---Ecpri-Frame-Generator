@@ -1,7 +1,16 @@
 import configparser
 from config_processing import fix_config,fix_config_ecpri
-config = configparser.ConfigParser()
-config.read('./configuration/configs.ini')
+global config
+global file_name
+
+def set_config(config_path) :
+    global config
+    config = configparser.ConfigParser()
+    config.read(config_path)
+
+def set_fname(fname) :
+    global file_name
+    file_name = fname
 
 def configuration() :
     global config
@@ -50,6 +59,10 @@ def config_type() :
         return 'ecpri'
     elif(int(config['PACKET_CONFIG']['ETHER_TYPE'].split('x')[1], 10)  < 1500) :
         return 'IEEE 802.3'
+    
+def get_fname():
+    global file_name
+    return file_name
     
 
 # configuration_ecpri()

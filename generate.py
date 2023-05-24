@@ -2,42 +2,42 @@ import struct
 import random
 import math
 from config import configuration,configuration_ecpri
-from generator.ethernet_packet.generate_ethernet import generate
+from generator.ethernet_packet.generate_ethernet import generate_eth
 from generator.ecpri_packet.generate_ecpri import generate__ecpri
 
+def generate(type) :
+    stream_duration_us \
+    ,ifgs \
+    ,src_mac \
+    ,dst_mac \
+    ,ether_type \
+    ,payload_type \
+    ,max_packet_size \
+    ,min_packet_size\
+    ,burst_size \
+    ,burst_periodicity_us = configuration()
 
-stream_duration_us \
-,ifgs \
-,src_mac \
-,dst_mac \
-,ether_type \
-,payload_type \
-,max_packet_size \
-,min_packet_size\
-,burst_size \
-,burst_periodicity_us = configuration()
+    #data rate and time to byte conversion calculations
+    bytes_per_us = math.floor(max_packet_size * burst_size / burst_periodicity_us)
+    bytes_per_period = bytes_per_us * burst_periodicity_us
+    bytes_due_stream = bytes_per_us * stream_duration_us
 
-#data rate and time to byte conversion calculations
-bytes_per_us = math.floor(max_packet_size * burst_size / burst_periodicity_us)
-bytes_per_period = bytes_per_us * burst_periodicity_us
-bytes_due_stream = bytes_per_us * stream_duration_us
+    #calculations of data size
+    max_data_size = max_packet_size - 26
+    min_data_size = min_packet_size - 26 #46-byte
 
-#calculations of data size
-max_data_size = max_packet_size - 26
-min_data_size = min_packet_size - 26 #46-byte
-
-def generate_eth():
-    generate(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,min_data_size,max_data_size,ifgs)
-
-
-def generate_ecpri():
-    protocol_version \
-    ,concatenation_indicator \
-    ,message_type \
-    ,payload_size = configuration_ecpri()
-    generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,ifgs,protocol_version,concatenation_indicator,message_type,payload_size)
+    if(type == 'ethernet'):
+        generate_eth(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,min_data_size,max_data_size,ifgs)
 
 
+    elif(type == 'ecpri'):
+        protocol_version \
+        ,concatenation_indicator \
+        ,message_type \
+        ,payload_size = configuration_ecpri()
+        generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,ifgs,protocol_version,concatenation_indicator,message_type,payload_size)
+
+    print('pffffffffff')
 
 #64-byte : is the minimum size of ethernet-frame excluding preamble and sop
 #8-byte : preamble + sop 

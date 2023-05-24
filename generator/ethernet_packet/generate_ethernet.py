@@ -8,10 +8,11 @@ from ..common.header_generator import generate_header
 from ..common.ifg_generator import generate_ifg , generate_break_ifg
 from ..common.preamble_generator import generate_preamble
 from ..common.sop_generator import generate_sop
+from config import get_fname
 
-def generate(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,min_data_size,max_data_size,ifgs):
+def generate_eth(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,min_data_size,max_data_size,ifgs):
     bytes = 0
-    with open('packets.txt', 'w') as file:
+    with open(get_fname(), 'w') as file:
         while bytes < bytes_due_stream:
             bytes_due_period = bytes + bytes_per_period
             for i in range(burst_size):

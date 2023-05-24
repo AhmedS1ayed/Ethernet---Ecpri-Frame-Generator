@@ -7,10 +7,11 @@ from ..common.ifg_generator import generate_ifg,generate_break_ifg
 from ..common.preamble_generator import generate_preamble
 from ..common.sop_generator import generate_sop
 from .ecpri_header_generator import generate_ecpri_header
+from config import get_fname
 
 def generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,ifgs,protocol_version,concatenation_indicator,message_type,payload_size):
     bytes = 0
-    with open('packets.txt', 'w') as file:
+    with open(get_fname(), 'w') as file:
         while bytes < bytes_due_stream:
             bytes_due_period = bytes + bytes_per_period
             for i in range(burst_size):
