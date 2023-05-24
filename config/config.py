@@ -1,5 +1,5 @@
 import configparser
-from config_processing import fix_config,fix_config_ecpri
+from config.config_processing import fix_config,fix_config_ecpri
 config = configparser.ConfigParser()
 config.read('config.ini')
 
@@ -38,15 +38,20 @@ def configuration_ecpri() :
     message_type = config['PACKET_CONFIG']['MESSAGE_TYPE'].split('x')[1]
     payload_size = config['PACKET_CONFIG']['PAYLOAD_SIZE'].split('x')[1]
 
-    protocol_version += "0"
-    concatenation_indicator = "0"+ concatenation_indicator
-
     protocol_version,concatenation_indicator,message_type,payload_size = fix_config_ecpri(protocol_version,concatenation_indicator,message_type,payload_size)
     return [protocol_version \
             ,concatenation_indicator \
             ,message_type \
             ,payload_size]
 
+def config_type() :
+    global config
+    if(config['PACKET_CONFIG']['ETHER_TYPE'] == '0x0800') :
+        return 'ethernet'
+    elif(config['PACKET_CONFIG']['ETHER_TYPE'].lower() == '0xaefe') :
+        return 'ecpri'
+    elif(int(config['PACKET_CONFIG']['ETHER_TYPE'].split('x')[1], 10)  < 1500) :
+        return 'IEEE 802.3'
     
 
 # configuration_ecpri()

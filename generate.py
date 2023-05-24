@@ -2,8 +2,7 @@ import struct
 import random
 import sys
 import math
-sys.path.append("./generator")
-from config import configuration,configuration_ecpri
+from config.config import configuration,configuration_ecpri
 from data_generator import generate_data,generate_data_ecpri
 from crc_generator import generate_crc
 from header_generator import generate_header
@@ -32,6 +31,7 @@ bytes_due_stream = bytes_per_us * stream_duration_us
 #calculations of data size
 max_data_size = max_packet_size - 26
 min_data_size = min_packet_size - 26 #46-byte
+
 
 
 
