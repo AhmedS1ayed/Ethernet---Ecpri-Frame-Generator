@@ -1,7 +1,7 @@
 import configparser
-from config.config_processing import fix_config,fix_config_ecpri
+from config_processing import fix_config,fix_config_ecpri
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read('./configuration/configs.ini')
 
 def configuration() :
     global config
@@ -28,8 +28,6 @@ def configuration() :
             ,min_packet_size\
             ,burst_size \
             ,burst_periodicity_us]
-
-
 
 def configuration_ecpri() :
     global config
