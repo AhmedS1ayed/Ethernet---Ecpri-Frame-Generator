@@ -58,9 +58,7 @@ def generate_eth(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,et
                     
                     bytes = bytes_before_cycle + no_ifgs
                     break
-
                 
-
                 #construct the packet
                 packet = preamble + sop + eth_header + data + crc
                 file.write(packet.hex() + '\n')
