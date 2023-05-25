@@ -42,7 +42,7 @@ def generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac
                 bytes +=2
 
                 #data generation
-                data,data_size = generate_data_fixed_length(int.from_bytes(payload_size, byteorder='big') - 4 , 42)
+                data,data_size = generate_data_fixed_length(int.from_bytes(payload_size, byteorder='big') - 4 , 38)
                 bytes += data_size
 
                 #fcs generation
