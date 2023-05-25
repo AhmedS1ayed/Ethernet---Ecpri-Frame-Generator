@@ -11,9 +11,10 @@ from config import get_fname
 
 def generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,ifgs,protocol_version,concatenation_indicator,message_type,payload_size):
     bytes = 0
+    bytes_due_period = 0
     with open(get_fname(), 'w') as file:
         while bytes < bytes_due_stream:
-            bytes_due_period = bytes + bytes_per_period
+            bytes_due_period +=  bytes_per_period
             for i in range(burst_size):
                 bytes_before_cycle = bytes
 
@@ -59,7 +60,6 @@ def generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac
                     file.write(ifg.hex() + '\n')
                     
                     bytes = bytes_before_cycle + no_ifgs
-                    bytes_due_period += bytes_per_period
                     break
 
                 # print('bytes : ' + str(bytes) + ' bytesDP :' + str(bytes_due_period))
@@ -70,6 +70,12 @@ def generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac
 
                 #ifg generation
                 ifg,no_ifgs = generate_ifg(ifgs)
+                file.write(ifg.hex() + '\n')
+                bytes += no_ifgs
+            #if the burst is over before going to next burst fill the rest of the burst with ifgs
+            while(bytes < bytes_due_period):
+                no_ifgs = bytes_due_period - bytes  
+                ifg,no_ifgs = generate_break_ifg(ifgs,no_ifgs)
                 file.write(ifg.hex() + '\n')
                 bytes += no_ifgs
 
