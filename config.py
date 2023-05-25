@@ -12,6 +12,10 @@ def set_fname(fname) :
     global file_name
     file_name = fname
 
+def get_fname() :
+    global file_name
+    return file_name
+
 def configuration() :
     global config
     stream_duration_ms = config['PACKET_CONFIG']['STREAM_DURATION_MS']
@@ -60,9 +64,7 @@ def config_type() :
     elif(int(config['PACKET_CONFIG']['ETHER_TYPE'].split('x')[1], 10)  < 1500) :
         return 'IEEE 802.3'
     
-def get_fname():
-    global file_name
-    return file_name
+
     
 
 # configuration_ecpri()

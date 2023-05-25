@@ -18,7 +18,8 @@ def generate(type) :
     ,burst_periodicity_us = configuration()
 
     #data rate and time to byte conversion calculations
-    bytes_per_us = math.floor(max_packet_size * burst_size / burst_periodicity_us)
+    #note : 12 is for ifg bytes
+    bytes_per_us = math.floor( (max_packet_size + 12) * burst_size / burst_periodicity_us)
     bytes_per_period = bytes_per_us * burst_periodicity_us
     bytes_due_stream = bytes_per_us * stream_duration_us
 

@@ -66,9 +66,9 @@ def generate_eth(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,et
                 file.write(packet.hex() + '\n')
 
                 #ifg generation
-                ifg,no_ifgs = generate_ifg(ifgs)
+                ifg = generate_ifg(ifgs)
                 file.write(ifg.hex() + '\n')
-                bytes += no_ifgs
+                bytes += 12
                 print('bytes : ' + str(bytes) + ' bytesDP :' + str(bytes_due_period))
             #if the burst is over before going to next burst fill the rest of the burst with ifgs
             while(bytes < bytes_due_period):
