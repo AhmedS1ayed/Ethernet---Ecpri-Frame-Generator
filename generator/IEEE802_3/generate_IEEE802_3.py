@@ -2,7 +2,7 @@ import struct
 import random
 import math
 from config import configuration,configuration_ecpri
-from ..data_generator import generate_data
+from ..data_generator import generate_data_fixed_length
 from ..common.crc_generator import generate_crc
 from ..common.header_generator import generate_header
 from ..common.ifg_generator import generate_ifg , generate_break_ifg
@@ -10,7 +10,7 @@ from ..common.preamble_generator import generate_preamble
 from ..common.sop_generator import generate_sop
 from config import get_fname
 
-def generate_eth(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,min_data_size,max_data_size,ifgs):
+def generate_IEEE802_3(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,min_data_size,max_data_size,ifgs):
     bytes = 0
     bytes_due_period = 0
     with open(get_fname(), 'w') as file:
@@ -29,7 +29,7 @@ def generate_eth(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,et
                 bytes += 14
 
                 #data generation
-                data,data_size = generate_data(min_data_size,max_data_size)
+                data,data_size = generate_data_fixed_length(int.from_bytes(ether_type, byteorder='big'), 46)
                 bytes += data_size
 
                 #fcs generation
@@ -58,7 +58,7 @@ def generate_eth(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,et
                     
                     bytes = bytes_before_cycle + no_ifgs
                     break
-
+                
                 #construct the packet
                 packet = preamble + sop + eth_header + data + crc
                 file.write(packet.hex() + '\n')
