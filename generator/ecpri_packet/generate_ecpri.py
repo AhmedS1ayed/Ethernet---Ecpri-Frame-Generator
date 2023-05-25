@@ -7,9 +7,11 @@ from ..common.ifg_generator import generate_ifg,generate_break_ifg
 from ..common.preamble_generator import generate_preamble
 from ..common.sop_generator import generate_sop
 from .ecpri_header_generator import generate_ecpri_header
+from .pc_id_generator import generate_pc_id
+from .seq_id_generator import generate_seq_id
 from config import get_fname
 
-def generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,ifgs,protocol_version,concatenation_indicator,message_type,payload_size):
+def generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,ifgs,protocol_version,concatenation_indicator,message_type,payload_size,pc,seq):
     bytes = 0
     bytes_due_period = 0
     with open(get_fname(), 'w') as file:
@@ -31,8 +33,16 @@ def generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac
                 ecpri_header = generate_ecpri_header(protocol_version,concatenation_indicator,message_type,payload_size)
                 bytes += 4
 
+                #adding PC ID
+                pc_id = generate_pc_id(pc)
+                bytes +=2
+
+                #adding SEQ ID
+                seq_id = generate_seq_id(seq)
+                bytes +=2
+
                 #data generation
-                data,data_size = generate_data_fixed_length(payload_size)
+                data,data_size = generate_data_fixed_length(int.from_bytes(payload_size, byteorder='big') - 4 , 42)
                 bytes += data_size
 
                 #fcs generation
@@ -65,7 +75,7 @@ def generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac
                 # print('bytes : ' + str(bytes) + ' bytesDP :' + str(bytes_due_period))
 
                 #construct the packet
-                packet = preamble + sop + eth_header + ecpri_header + data + crc
+                packet = preamble + sop + eth_header + ecpri_header + pc_id + seq_id + data + crc
                 file.write(packet.hex() + '\n')
 
                 #ifg generation
