@@ -4,7 +4,7 @@ import math
 from config import configuration,configuration_ecpri
 from generator.ethernet_packet.generate_ethernet import generate_eth
 from generator.ecpri_packet.generate_ecpri import generate__ecpri
-from generator.IEEE802_3.generate_IEEE802_3 import generate_IEEE802_3
+from generator.IEEE802_3.generate_IEEE_802_3 import generate_IEEE802_3
 
 def generate(type) :
     stream_duration_us \

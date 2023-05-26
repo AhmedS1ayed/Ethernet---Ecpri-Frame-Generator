@@ -29,7 +29,7 @@ def generate_IEEE802_3(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_
                 bytes += 14
 
                 #data generation
-                data,data_size = generate_data_fixed_length(int.from_bytes(ether_type, byteorder='big'), 46)
+                data,data_size = generate_data_fixed_length(int.from_bytes(ether_type, byteorder='big'), int.from_bytes(ether_type, byteorder='big'))
                 bytes += data_size
 
                 #fcs generation
