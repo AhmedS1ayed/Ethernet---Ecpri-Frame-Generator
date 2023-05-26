@@ -19,9 +19,9 @@ def generate(type) :
 
     #data rate and time to byte conversion calculations
     #note : 12 is for ifg bytes
-    bytes_per_us = math.ceil( (max_packet_size + 12) * burst_size / burst_periodicity_us)
-    bytes_per_period = bytes_per_us * burst_periodicity_us
-    bytes_due_stream = bytes_per_us * stream_duration_us
+    bytes_per_us =  (max_packet_size + 12) * burst_size / burst_periodicity_us
+    bytes_per_period = math.ceil(bytes_per_us * burst_periodicity_us)
+    bytes_due_stream = math.ceil(bytes_per_us * stream_duration_us)
 
     #calculations of data size
     max_data_size = max_packet_size - 26
