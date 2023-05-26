@@ -36,7 +36,7 @@ def generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac
                 message,bytes = generate_message(message_type,payload_size,bytes)
 
                 #fcs generation
-                crc = generate_crc(message)
+                crc = generate_crc(preamble + sop + eth_header + ecpri_header + message )
                 bytes += 4
 
                 #check if the frame can be sent and if it can't , send ifgs instead and make them a multiple of 4 :

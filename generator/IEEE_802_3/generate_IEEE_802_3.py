@@ -33,7 +33,7 @@ def generate_IEEE_802_3(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src
                 bytes += data_size
 
                 #fcs generation
-                crc = generate_crc(data)
+                crc = generate_crc(preamble + sop + eth_header + data)
                 bytes += 4
 
                 #check if the frame can be sent and if it can't , send ifgs instead and make them a multiple of 4 :
@@ -67,13 +67,12 @@ def generate_IEEE_802_3(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src
                 ifg = generate_ifg(ifgs)
                 file.write(ifg.hex() + '\n')
                 bytes += 12
-                print('bytes : ' + str(bytes) + ' bytesDP :' + str(bytes_due_period))
+
             #if the burst is over before going to next burst fill the rest of the burst with ifgs
             while(bytes < bytes_due_period):
                 no_ifgs = bytes_due_period - bytes  
                 ifg,no_ifgs = generate_break_ifg(ifgs,no_ifgs)
                 file.write(ifg.hex() + '\n')
                 bytes += no_ifgs
-                print('bytes : ' + str(bytes) + ' bytesDP :' + str(bytes_due_period))
 
         file.close()
