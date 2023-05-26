@@ -7,9 +7,12 @@ from config import config_type,set_config,set_fname
 
 
 def main(arg1 = 'config.ini', arg2 = 'packets.txt'):
-    set_config('config.ini')
-    set_fname('packets.txt')
-    generate(config_type())
+    try :
+        set_config('config.ini')
+        set_fname('packets.txt')
+        generate(config_type())
+    except :
+        print("config file is not valid")
     
     print(arg1, arg2)
 

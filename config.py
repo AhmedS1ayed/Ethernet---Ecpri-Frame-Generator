@@ -23,7 +23,10 @@ def configuration() :
     src_mac = config['PACKET_CONFIG']['SOURCE_ADDRESS'].split('x')[1]
     dst_mac = config['PACKET_CONFIG']['DESTINATION_ADDRESS'].split('x')[1]
     ether_type = config['PACKET_CONFIG']['ETHER_TYPE'].split('x')[1]
-    payload_type = config['PACKET_CONFIG']['PAYLOAD_TYPE']
+    try:
+        payload_type = config['PACKET_CONFIG']['PAYLOAD_TYPE']
+    except:
+        payload_type = "none"
     max_packet_size = config['PACKET_CONFIG']['MAX_PACKET_SIZE']
     min_packet_size = 72
     burst_size = config['PACKET_CONFIG']['BURST_SIZE']

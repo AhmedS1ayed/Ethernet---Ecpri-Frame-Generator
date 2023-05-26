@@ -10,7 +10,7 @@ from ..common.preamble_generator import generate_preamble
 from ..common.sop_generator import generate_sop
 from config import get_fname
 
-def generate_IEEE802_3(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,min_data_size,max_data_size,ifgs):
+def generate_IEEE_802_3(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,min_data_size,max_data_size,ifgs):
     bytes = 0
     bytes_due_period = 0
     with open(get_fname(), 'w') as file:
