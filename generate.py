@@ -4,6 +4,7 @@ import math
 from config import configuration,configuration_ecpri
 from generator.ethernet_packet.generate_ethernet import generate_eth
 from generator.ecpri_packet.generate_ecpri import generate__ecpri
+from generator.IEEE802_3.generate_IEEE802_3 import generate_IEEE802_3
 
 def generate(type) :
     stream_duration_us \
@@ -38,7 +39,10 @@ def generate(type) :
         ,payload_size \
         ,pc \
         ,seq = configuration_ecpri()
-        generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,ifgs,protocol_version,concatenation_indicator,message_type,payload_size,pc,seq)
+        generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,ifgs,protocol_version,concatenation_indicator,message_type,payload_size)
+
+    elif(type =='IEEE 802.3'):
+        generate_IEEE802_3(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,min_data_size,max_data_size,ifgs)
         
 #64-byte : is the minimum size of ethernet-frame excluding preamble and sop
 #8-byte : preamble + sop 

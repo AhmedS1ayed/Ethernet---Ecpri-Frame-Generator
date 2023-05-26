@@ -7,12 +7,10 @@ from ..common.ifg_generator import generate_ifg,generate_break_ifg
 from ..common.preamble_generator import generate_preamble
 from ..common.sop_generator import generate_sop
 from .ecpri_header_generator import generate_ecpri_header
-from .iq_message.message_0.pc_id_generator import generate_pc_id
-from .iq_message.message_0.seq_id_generator import generate_seq_id
 from .iq_message.generate_message import generate_message
 from config import get_fname
 
-def generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,ifgs,protocol_version,concatenation_indicator,message_type,payload_size,pc,seq):
+def generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,ifgs,protocol_version,concatenation_indicator,message_type,payload_size):
     bytes = 0
     bytes_due_period = 0
     with open(get_fname(), 'w') as file:
