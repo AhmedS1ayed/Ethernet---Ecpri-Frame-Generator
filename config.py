@@ -68,6 +68,12 @@ def config_type() :
     elif(int(config['PACKET_CONFIG']['ETHER_TYPE'].split('x')[1], 10)  < 1500) :
         return 'IEEE 802.3'
     
+def config_message_00():
+    pc = config['PACKET_CONFIG']['PC_ID'].split('x')[1]
+    seq = config['PACKET_CONFIG']['SEQ_ID'].split('x')[1]
+
+    return pc,seq
+    
 
     
 

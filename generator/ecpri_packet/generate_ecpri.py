@@ -7,8 +7,9 @@ from ..common.ifg_generator import generate_ifg,generate_break_ifg
 from ..common.preamble_generator import generate_preamble
 from ..common.sop_generator import generate_sop
 from .ecpri_header_generator import generate_ecpri_header
-from .pc_id_generator import generate_pc_id
-from .seq_id_generator import generate_seq_id
+from .iq_message.message_0.pc_id_generator import generate_pc_id
+from .iq_message.message_0.seq_id_generator import generate_seq_id
+from .iq_message.generate_message import generate_message
 from config import get_fname
 
 def generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,ifgs,protocol_version,concatenation_indicator,message_type,payload_size,pc,seq):
@@ -32,21 +33,12 @@ def generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac
                 #ecpri header generation
                 ecpri_header = generate_ecpri_header(protocol_version,concatenation_indicator,message_type,payload_size)
                 bytes += 4
-
-                #adding PC ID
-                pc_id = generate_pc_id(pc)
-                bytes +=2
-
-                #adding SEQ ID
-                seq_id = generate_seq_id(seq)
-                bytes +=2
-
-                #data generation
-                data,data_size = generate_data_fixed_length(int.from_bytes(payload_size, byteorder='big') - 4 , 38)
-                bytes += data_size
+                
+                #generate message according to the type
+                message,bytes = generate_message(message_type,payload_size,bytes)
 
                 #fcs generation
-                crc = generate_crc(data)
+                crc = generate_crc(message)
                 bytes += 4
 
                 #check if the frame can be sent and if it can't , send ifgs instead and make them a multiple of 4 :
@@ -75,7 +67,7 @@ def generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac
                 # print('bytes : ' + str(bytes) + ' bytesDP :' + str(bytes_due_period))
 
                 #construct the packet
-                packet = preamble + sop + eth_header + ecpri_header + pc_id + seq_id + data + crc
+                packet = preamble + sop + eth_header + ecpri_header + message + crc
                 file.write(packet.hex() + '\n')
 
                 #ifg generation
