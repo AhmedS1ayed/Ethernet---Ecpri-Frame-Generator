@@ -1,0 +1,4 @@
+1- changing payload size (001a).
+2- ecpri frame of fixed size.
+3- maximum packet size that can be transfered without loss is equal to ecpri frame.
+4- perfectly fit bursts.

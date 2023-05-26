@@ -1,0 +1,5 @@
+1- fixed size IEEE 802.3 frame , size = ether_type = 0x0258 = 600.
+
+2- frame size is fixed and it is equal to maximum packet size (626) that can be transfered without losing data.
+
+3- it perfectly fits the burst periodicity.

@@ -1,0 +1,6 @@
+1- random ethernet frame
+
+2- frame size is ranged between minimum size(72) 
+and maximum packet(426) that can be transfered without losing it .
+
+3- no data loss but spare packets in bursts are transformed into ifgs depending on their size and they are of multiple of 4.

@@ -1,0 +1,5 @@
+1- fixed size ethernet frame
+
+2- frame size is fixed and it is maximum packet size(426) that can be transfered without losing data.
+
+3- no data loss and packets perfectly fits burst periodicity.

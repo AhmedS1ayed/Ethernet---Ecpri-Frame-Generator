@@ -1,0 +1,3 @@
+1- ecpri frame of fixed size.
+2- maximum packet size that can be transfered without loss is less than ecpri frame (60).
+3- a constant packet loss every burst.

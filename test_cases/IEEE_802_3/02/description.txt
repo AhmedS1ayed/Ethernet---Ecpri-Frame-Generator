@@ -1,0 +1,5 @@
+1- fixed size IEEE 802.3 frame , size = ether_type = 0x0258 = 600.
+
+2- frame size is fixed and it is less than maximum packet size (700) that can be transfered without losing data.
+
+3- no data loss and spared packets are converted to ifgs.

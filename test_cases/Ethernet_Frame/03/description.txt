@@ -1,0 +1,5 @@
+1- fixed size ethernet frame.
+
+2- frame size is fixed and it is greater than maximum packet size(426) that can be transfered without losing data.
+
+3- 2 packets are sent and there is constant loss of last packets every burst.

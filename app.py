@@ -8,8 +8,8 @@ from config import config_type,set_config,set_fname
 
 def main(arg1 = 'config.ini', arg2 = 'packets.txt'):
     try :
-        set_config('config.ini')
-        set_fname('packets.txt')
+        set_config(arg1)
+        set_fname(arg2)
         generate(config_type())
     except :
         print("config file is not valid")
