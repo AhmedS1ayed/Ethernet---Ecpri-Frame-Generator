@@ -36,9 +36,7 @@ def generate(type) :
         protocol_version \
         ,concatenation_indicator \
         ,message_type \
-        ,payload_size \
-        ,pc \
-        ,seq = configuration_ecpri()
+        ,payload_size = configuration_ecpri()
         generate__ecpri(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,ifgs,protocol_version,concatenation_indicator,message_type,payload_size)
 
     elif(type =='IEEE 802.3'):
