@@ -2,8 +2,8 @@ import sys
 import os
 sys.path.append("./generator")
 sys.path.append("./configuration")
-from generate import generate
-from config import config_type,set_config,set_fname
+from generator.generate import generate
+from configuration.config import config_type,set_config,set_fname
 
 
 def main(arg1 = 'config.ini', arg2 = 'packets.txt'):

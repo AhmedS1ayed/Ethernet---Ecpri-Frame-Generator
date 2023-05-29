@@ -1,7 +1,7 @@
 import struct
 import random
 import math
-from config import configuration,configuration_ecpri
+from configuration.config import configuration,configuration_ecpri
 from generator.ethernet_packet.generate_ethernet import generate_eth
 from generator.ecpri_packet.generate_ecpri import generate__ecpri
 from generator.IEEE_802_3.generate_IEEE_802_3 import generate_IEEE_802_3

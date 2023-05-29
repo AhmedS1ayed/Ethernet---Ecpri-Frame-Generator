@@ -1,5 +1,5 @@
 import configparser
-from .config_processing import fix_config,fix_config_ecpri
+from config_processing import fix_config,fix_config_ecpri
 global config
 global file_name
 
@@ -51,16 +51,12 @@ def configuration_ecpri() :
     concatenation_indicator = config['PACKET_CONFIG']['CONCATENATION_INDICATOR']
     message_type = config['PACKET_CONFIG']['MESSAGE_TYPE'].split('x')[1]
     payload_size = config['PACKET_CONFIG']['PAYLOAD_SIZE'].split('x')[1]
-    pc = config['PACKET_CONFIG']['PC_ID'].split('x')[1]
-    seq = config['PACKET_CONFIG']['SEQ_ID'].split('x')[1]
 
     protocol_version,concatenation_indicator,message_type,payload_size = fix_config_ecpri(protocol_version,concatenation_indicator,message_type,payload_size)
     return [protocol_version \
             ,concatenation_indicator \
             ,message_type \
-            ,payload_size
-            ,pc
-            ,seq]
+            ,payload_size]
 
 def config_type() :
     global config

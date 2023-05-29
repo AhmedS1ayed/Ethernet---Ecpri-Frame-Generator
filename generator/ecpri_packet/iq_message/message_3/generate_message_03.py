@@ -1,7 +1,7 @@
 from ..message_0to2.pc_id_generator import generate_pc_id
 from ..message_0to2.seq_id_generator import generate_seq_id
-from ....data_generator import generate_data_fixed_length
-from config import config_message_00
+from ....data.data_generator import generate_data_fixed_length
+from configuration.config import config_message_00
 def generate_message_03(payload_size,bytes):
     pc,seq = config_message_00()
     

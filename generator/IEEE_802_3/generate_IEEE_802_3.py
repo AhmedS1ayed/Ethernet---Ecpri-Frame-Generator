@@ -1,14 +1,14 @@
 import struct
 import random
 import math
-from config import configuration,configuration_ecpri
-from ..data_generator import generate_data_fixed_length
+from configuration.config import configuration,configuration_ecpri
+from ..data.data_generator import generate_data_fixed_length
 from ..common.crc_generator import generate_crc
 from ..common.header_generator import generate_header
 from ..common.ifg_generator import generate_ifg , generate_break_ifg
 from ..common.preamble_generator import generate_preamble
 from ..common.sop_generator import generate_sop
-from config import get_fname
+from configuration.config import get_fname
 
 def generate_IEEE_802_3(bytes_due_stream,bytes_per_period,burst_size,dst_mac,src_mac,ether_type,min_data_size,max_data_size,ifgs):
     bytes = 0
